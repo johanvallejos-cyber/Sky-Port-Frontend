@@ -59,6 +59,14 @@ La prueba de navegador usa Microsoft Edge instalado y una API simulada en un pue
 
 ## Publicación independiente
 
+**[Guía paso a paso para Render](RENDER.md)**. El repositorio incluye `render.yaml` y un servidor de producción con proxy a la API. Se publica como **Web Service Node**, manteniendo el backend separado y sin modificar CORS ni `Program.cs`.
+
+Configurar `API_PROXY_TARGET` en Render con la URL pública HTTPS de la API, sin `/api` al final. El Blueprint utiliza `npm ci --include=dev && npm run build` para construir y `npm start` para ejecutar. `GET /healthz` comprueba que el frontend está activo; no comprueba la base de datos.
+
 `npm run build` genera `dist/`. `npm run preview` permite revisar el resultado estático en `http://127.0.0.1:4173`; no incluye el proxy de desarrollo ni conexión a la API.
 
-Para publicar con datos reales, el hosting del frontend debe reenviar `/api/*` al backend mediante un proxy inverso. El proxy de Vite solo funciona en desarrollo y no se incluye en `dist/`. Esta configuración se realiza en el hosting, sin añadir el frontend al proyecto .NET.
+`npm start` sirve `dist/` y reenvía `/api/*` a `API_PROXY_TARGET`, conservando el cuerpo JSON, las rutas y el JWT. La configuración es de servidor y no se incluye en el código del navegador. El proxy de Vite sigue utilizándose únicamente en desarrollo.
+
+Para probar el servidor de producción localmente, ejecutar primero `npm run build`, establecer `$env:API_PROXY_TARGET` y usar `npm start`. El servidor escucha en `0.0.0.0` y usa `PORT` o `10000`. La API debe tener un certificado HTTPS válido para este proxy de producción.
+
+La verificación del proxy de producción se ejecuta con `npm run test:production` y utiliza una API simulada, sin credenciales reales.

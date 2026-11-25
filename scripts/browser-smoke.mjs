@@ -72,7 +72,7 @@ process.env.API_PROXY_TARGET = `http://127.0.0.1:${api.address().port}`;
 let vite, browser;
 try {
   vite = await createViteServer({
-    server: { host: "127.0.0.1", port: 0 },
+    server: { host: "127.0.0.1", port: 0, strictPort: false },
     logLevel: "error",
   });
   await vite.listen();

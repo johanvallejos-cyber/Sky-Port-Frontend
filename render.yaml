@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: skyport-frontend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: API_PROXY_TARGET
+        sync: false
